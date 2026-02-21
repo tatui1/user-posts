@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import { UserList } from './components/UserList/UserList'
-import type { User } from './types'
+import { PostList } from './components/PostList/PostList'
+import type { User, Post  } from './types'
 import { BASE_URL } from './constants'
 import './App.css'
 
 function App() {
   const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
+  const [posts, setPosts] = useState<Post[]>([])
+  const [loadingUsers, setLoadingUsers] = useState(true)
+  const [loadingPosts, setLoadingPosts] = useState(false)
   const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [selectedName, setSelectedName] = useState('')
 
   useEffect(() => {
     const getUsers = async () => {
@@ -19,11 +23,33 @@ function App() {
       } catch (error) {
         console.log('Ошибка:', error)
       } finally {
-        setLoading(false)
+        setLoadingUsers(false)
       }
     }
     getUsers()
   }, [])
+
+  const getPosts = async (userId: number) => {
+    setLoadingPosts(true)
+    try {
+      const res = await fetch(`${BASE_URL}/posts?userId=${userId}`)
+      if (!res.ok) throw new Error('Ошибка')
+      const data = await res.json()
+      setPosts(data)
+    } catch (error) {
+      console.log('Ошибка:', error)
+      setPosts([])
+    } finally {
+      setLoadingPosts(false)
+    }
+  }
+
+  const handleSelect = (id: number) => {
+    setSelectedId(id)
+    const user = users.find(u => u.id === id)
+    setSelectedName(user?.name || '')
+    getPosts(id)
+  }
 
   return (
     <div className="app">
@@ -31,9 +57,16 @@ function App() {
       <UserList 
         users={users}
         selectedId={selectedId}
-        onSelect={setSelectedId}
-        loading={loading}
+        onSelect={handleSelect}
+        loading={loadingUsers}
       />
+      {selectedId && (
+        <PostList 
+          posts={posts}
+          loading={loadingPosts}
+          userName={selectedName}
+        />
+      )}
     </div>
   )
 }

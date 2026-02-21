@@ -22,8 +22,7 @@ export const UserList = ({ users, selectedId, onSelect, loading }: Props) => {
             key={user.id}
             user={user}
             onClick={() => onSelect(user.id)}
-            isSelected={selectedId === user.id}
-          />
+            isSelected={selectedId === user.id}/>
         ))}
       </div>
     </div>

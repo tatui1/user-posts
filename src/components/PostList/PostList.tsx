@@ -20,7 +20,7 @@ export const PostList = ({ posts, loading, userName }: Props) => {
 
   return (
     <div>
-      <h2>Посты: {userName}</h2>
+      <h2>Посты: "{userName}"</h2>
       <div className="posts-grid">
         {posts.map(post => (
           <PostItem key={post.id} post={post} />

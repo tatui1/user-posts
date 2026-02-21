@@ -58,8 +58,7 @@ function App() {
         users={users}
         selectedId={selectedId}
         onSelect={handleSelect}
-        loading={loadingUsers}
-      />
+        loading={loadingUsers}/>
       {selectedId && (
         <PostList 
           posts={posts}

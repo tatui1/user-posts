@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { UserList } from './components/UserList/UserList'
 import { PostList } from './components/PostList/PostList'
-import type { User, Post  } from './types'
-import { BASE_URL } from './constants'
+import type { User, Post } from './types'
+import axiosApi from './axiosApi'
 import './App.css'
 
 function App() {
@@ -16,58 +16,63 @@ function App() {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/users`)
-        if (!res.ok) throw new Error('Ошибка')
-        const data = await res.json()
-        setUsers(data)
+        const { data } = await axiosApi.get<User[]>('/users');
+        setUsers(data);
       } catch (error) {
-        console.log('Ошибка:', error)
+        console.error('Ошибка при загрузке пользователей:', error);
       } finally {
-        setLoadingUsers(false)
+        setLoadingUsers(false);
       }
-    }
-    getUsers()
-  }, [])
+    };
+    void getUsers();
+  }, []);
 
   const getPosts = async (userId: number) => {
-    setLoadingPosts(true)
+    setLoadingPosts(true);
     try {
-      const res = await fetch(`${BASE_URL}/posts?userId=${userId}`)
-      if (!res.ok) throw new Error('Ошибка')
-      const data = await res.json()
-      setPosts(data)
+      const { data } = await axiosApi.get<Post[]>(`/posts?userId=${userId}`);
+      setPosts(data);
     } catch (error) {
-      console.log('Ошибка:', error)
-      setPosts([])
+      console.error('Ошибка при загрузке постов:', error);
+      setPosts([]);
     } finally {
-      setLoadingPosts(false)
+      setLoadingPosts(false);
     }
-  }
+  };
 
   const handleSelect = (id: number) => {
-    setSelectedId(id)
-    const user = users.find(u => u.id === id)
-    setSelectedName(user?.name || '')
-    getPosts(id)
-  }
+    setSelectedId(id);
+    const user = users.find((u) => u.id === id);
+    setSelectedName(user?.name || '');
+    void getPosts(id);
+  };
 
   return (
-    <div className="app">
-      <h1>Пользователи и посты</h1>
-      <UserList 
-        users={users}
-        selectedId={selectedId}
-        onSelect={handleSelect}
-        loading={loadingUsers}/>
-      {selectedId && (
-        <PostList 
-          posts={posts}
-          loading={loadingPosts}
-          userName={selectedName}
-        />
-      )}
+    <div className="app-container">
+      <h1>Управление пользователями</h1>
+      <div className="main-layout">
+        <div className="sidebar">
+          <UserList
+            users={users}
+            selectedId={selectedId}
+            onSelect={handleSelect}
+            loading={loadingUsers}
+          />
+        </div>
+        <div className="content">
+          {selectedId ? (
+            <PostList
+              posts={posts}
+              loading={loadingPosts}
+              userName={selectedName}
+            />
+          ) : (
+            <div className="empty-state">Выберите пользователя, чтобы увидеть посты</div>
+          )}
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
 export default App

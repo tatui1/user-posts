@@ -49,7 +49,7 @@ body {
 
 h1 {
   text-align: center;
-  color: #333;
+  color: #ffffff;
   margin-bottom: 30px;
 }
 .post-item {
@@ -98,4 +98,29 @@ h1 {
   color: #666;
   margin: 4px 0;
   font-size: 14px;
+}
+.main-layout {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  align-items: flex-start;
+}
+
+.sidebar {
+  flex: 1;
+  max-width: 400px;
+}
+
+.content {
+  flex: 2;
+}
+
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  .sidebar {
+    max-width: 100%;
+    width: 100%;
+  }
 }

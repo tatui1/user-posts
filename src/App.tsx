@@ -16,16 +16,16 @@ function App() {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const { data } = await axiosApi.get<User[]>('/users');
-        setUsers(data);
+        const { data } = await axiosApi.get<User[]>('/users')
+        setUsers(data)
       } catch (error) {
-        console.error('Ошибка при загрузке пользователей:', error);
+        console.error('Ошибка при загрузке пользователей:', error)
       } finally {
-        setLoadingUsers(false);
+        setLoadingUsers(false)
       }
-    };
+    }
     void getUsers();
-  }, []);
+  }, [])
 
   const getPosts = async (userId: number) => {
     setLoadingPosts(true);
@@ -36,16 +36,16 @@ function App() {
       console.error('Ошибка при загрузке постов:', error);
       setPosts([]);
     } finally {
-      setLoadingPosts(false);
+      setLoadingPosts(false)
     }
-  };
+  }
 
   const handleSelect = (id: number) => {
-    setSelectedId(id);
-    const user = users.find((u) => u.id === id);
-    setSelectedName(user?.name || '');
-    void getPosts(id);
-  };
+    setSelectedId(id)
+    const user = users.find((u) => u.id === id)
+    setSelectedName(user?.name || '')
+    void getPosts(id)
+  }
 
   return (
     <div className="app-container">
@@ -72,7 +72,7 @@ function App() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default App
